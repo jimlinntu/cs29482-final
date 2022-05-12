@@ -47,7 +47,7 @@ logger.addHandler(consoleHandler)
 torch.manual_seed(1)    # reproducible
 
 # Hyper Parameters
-EPOCH = 200               # train the training data n times, to save time, we just train 1 epoch
+EPOCH = 100               # train the training data n times, to save time, we just train 1 epoch
 BATCH_SIZE = 64
 LR = 0.01               # learning rate
 
