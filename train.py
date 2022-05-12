@@ -25,12 +25,14 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-j', '--workers', default=6, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--comment', type=str, default="test")
+
+parser.add_argument('--final_dim', default=512, type=int)
 args = parser.parse_args()
 
 logger.setLevel(logging.INFO)
 logFormatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
-comment = "{}_{}".format(str(datetime.now().strftime(r'%m%d_%H%M%S')), args.comment)
+comment = "{}_{}_{}".format(str(datetime.now().strftime(r'%m%d_%H%M%S')), args.final_dim, args.comment)
 resultDirPath = Path("log") / comment
 resultDirPath.mkdir(parents=True, exist_ok=True)
 
@@ -67,7 +69,7 @@ testset = datasets.CIFAR10(root='./data', train=False,
 test_loader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE,
         shuffle=False, num_workers=args.workers)
 
-model = ResNet18(10).cuda()
+model = ResNet18(args.final_dim).cuda()
 logger.info(model)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)   # optimize all cnn parameters

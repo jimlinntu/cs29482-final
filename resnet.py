@@ -75,10 +75,9 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, hidden_size=0, num_classes=10):
+    def __init__(self, block, num_blocks, final_dim=512, num_classes=10):
         super(ResNet, self).__init__()
         self.in_planes = 64
-        final_dim = 1024
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3,
                                stride=1, padding=1, bias=False)
@@ -87,8 +86,8 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, final_dim, num_blocks[3], stride=2)
-        self.linear = nn.Linear(final_dim*block.expansion, num_classes)
-        logger.info("MEC: {}".format((final_dim*block.expansion + 1) * num_classes))
+        self.linear = nn.Linear(final_dim * block.expansion, num_classes)
+        logger.info("MEC: {}".format((final_dim * block.expansion + 1) * num_classes))
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
@@ -110,11 +109,11 @@ class ResNet(nn.Module):
         return out
 
 
-def ResNet18(hidden_size):
-    return ResNet(BasicBlock, [2, 2, 2, 2], hidden_size)
+def ResNet18(final_dim):
+    return ResNet(BasicBlock, [2, 2, 2, 2], final_dim)
 
-def ResNet34(hidden_size):
-    return ResNet(BasicBlock, [3, 4, 6, 3], hidden_size)
+def ResNet34(final_dim):
+    return ResNet(BasicBlock, [3, 4, 6, 3], final_dim)
 
 
 def ResNet50():
