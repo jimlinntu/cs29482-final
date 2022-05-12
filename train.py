@@ -45,13 +45,11 @@ logger.addHandler(consoleHandler)
 torch.manual_seed(1)    # reproducible
 
 # Hyper Parameters
-EPOCH = 100               # train the training data n times, to save time, we just train 1 epoch
+EPOCH = 200               # train the training data n times, to save time, we just train 1 epoch
 BATCH_SIZE = 64
-TIME_STEP = 28          # rnn time step / image height
-INPUT_SIZE = 28         # rnn input size / image width
 LR = 0.01               # learning rate
 
-logger.info("Epoch: {} | batch size: {} | Time_step: {} | Input_size: {} | LR: {}".format(EPOCH, BATCH_SIZE, TIME_STEP, INPUT_SIZE, LR))
+logger.info("Epoch: {} | batch size: {} | LR: {}".format(EPOCH, BATCH_SIZE, LR))
 
 transform=transforms.Compose([
     transforms.ToTensor(),
@@ -69,7 +67,7 @@ testset = datasets.CIFAR10(root='./data', train=False,
 test_loader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE,
         shuffle=False, num_workers=args.workers)
 
-model = ResNet18().cuda()
+model = ResNet18(10).cuda()
 logger.info(model)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)   # optimize all cnn parameters
@@ -121,12 +119,14 @@ for epoch in range(EPOCH):
     epoch_test_loss = test_loss / test_total
     epoch_test_acc = test_correct / test_total
 
+    logger.info('Epoch: {}'.format(epoch))
+    logger.info('Train | loss: {:.4f} | accuracy {:.2f}'.format(epoch_train_loss, epoch_train_acc))
+    logger.info('Test | loss: {:.4f} | accuracy {:.2f}'.format(epoch_test_loss, epoch_test_acc))
+
     if epoch_test_loss < best_test_loss:
         best_test_loss = epoch_test_loss
         filename = resultDirPath / "best_checkpoint.pth.tar"
         torch.save(model.state_dict(), filename)
         logger.info("Current Best(loss: {:.4f}, acc: {:.2f}) Save to: {}".format(epoch_test_loss, epoch_test_acc, filename))
 
-    logger.info('Epoch: {}'.format(epoch))
-    logger.info('Train | loss: {:.4f} | accuracy {:.2f}'.format(epoch_train_loss, epoch_train_acc))
-    logger.info('Test | loss: {:.4f} | accuracy {:.2f}'.format(epoch_test_loss, epoch_test_acc))
+    
