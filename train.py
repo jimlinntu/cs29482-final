@@ -80,8 +80,8 @@ test_loader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE,
 
 if args.arch == 'resnet18':
     model = ResNet18(args.final_dim)
-elif args.arch == 'vgg19':
-    model = VGG('VGG19', args.final_dim)
+elif args.arch == 'vgg11':
+    model = VGG('VGG11', args.final_dim)
 else:
     raise NotImplementedError("Not support {}".format(args.arch))
 
@@ -153,8 +153,6 @@ else:
                 loss = loss_func(outputs, labels)                   # cross entropy loss
 
                 _, predicted = torch.max(outputs, 1)
-                y_pred.append(predicted)
-                y_true.append(labels)
                 
                 test_total += labels.size(0)
                 test_correct += (predicted == labels).sum().item()

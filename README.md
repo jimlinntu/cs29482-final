@@ -10,3 +10,5 @@ brainome -headerless -nosplit -vv cifar_train.csv -o cifar_out_rf_vv.py
 ```
 python train.py --final_dim 100
 ```
+
+Ref: https://github.com/kuangliu/pytorch-cifar
